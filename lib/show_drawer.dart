@@ -2,10 +2,9 @@ library show_drawer;
 import 'package:flutter/widgets.dart';
 import 'package:show_overlay/show_overlay.dart';
 
-typedef DrawerCloser = Function();
-typedef Builder = Widget Function(BuildContext, DrawerCloser);
+typedef Builder = Widget Function(BuildContext, Function);
 
-DrawerCloser showDrawer({
+Function showDrawer({
   @required BuildContext context,
 
   Widget child,
