@@ -5,8 +5,9 @@ import 'package:show_overlay/show_overlay.dart';
 typedef DrawerCloser = Function();
 typedef Builder = Widget Function(BuildContext, DrawerCloser);
 
-DrawerCloser showDrawer(
-  BuildContext context, {
+DrawerCloser showDrawer({
+  @required BuildContext context,
+
   Widget child,
   Builder builder,
   Duration duration,
