@@ -1,49 +1,51 @@
 library show_drawer;
+
 import 'package:flutter/widgets.dart';
 import 'package:show_overlay/show_overlay.dart';
 
-typedef Builder = Widget Function(BuildContext, Function);
+/// [_Builder] 包含三个参数，第一个为 [BuildContext], 第二个为 [Animation<double>]
+/// 第三个为 [Function], 执行 [Function] 可以移除当前的 [Drawer]
+typedef _Builder = Widget Function(BuildContext, Animation<double>, Function);
 
 Function showDrawer({
   @required BuildContext context,
 
-  Widget child,
-  Builder builder,
-  Duration duration,
+  /// [builder] 提供 builder 来构建你的 widget
+  _Builder builder,
+
+  /// [animationDuration] 如果你使用动画，可以通过这个指定动画的执行时间
+  Duration animationDuration,
+
+  /// [alignment] 指定动画的方向
   Alignment alignment,
 }) {
-  // 至少传入一个
-  assert(child != null || builder != null);
+  assert(builder != null);
 
   return showOverlay(
     barrier: true,
     context: context,
     barrierBlur: true,
     barrierDismissible: true,
-    duration: duration = Duration(milliseconds: 200),
-    builder: builder ??
-        (context, animation, closer) {
-          return _Drawer(
-            animation: animation,
-            alignment: alignment,
-            builder: builder,
-            closer: closer,
-            child: child,
-          );
-        },
+    animationDuration: animationDuration ?? Duration(milliseconds: 200),
+    builder: (context, animation, closer) {
+      return _Drawer(
+        animation: animation,
+        alignment: alignment,
+        builder: builder,
+        closer: closer,
+      );
+    },
   );
 }
 
 class _Drawer extends AnimatedWidget {
-  final Widget child;
-  final Closer closer;
-  final Builder builder;
+  final Function closer;
+  final _Builder builder;
   final Alignment alignment;
   final Animation<double> animation;
   final curve = CurveTween(curve: Curves.easeInOutCirc);
   _Drawer({
     Key key,
-    this.child,
     this.builder,
     this.closer,
     this.animation,
@@ -88,8 +90,8 @@ class _Drawer extends AnimatedWidget {
     return Align(
       alignment: this.alignment,
       child: SlideTransition(
+        child: builder(context, animation, this.closer),
         position: offsetTween.animate(animation.drive(curve)),
-        child: builder != null ? builder(context, this.closer) : child,
       ),
     );
   }

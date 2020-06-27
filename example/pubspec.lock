@@ -81,8 +81,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
-  show_overlay:
+  show_drawer:
     dependency: "direct main"
+    description:
+      path: ".."
+      relative: true
+    source: path
+    version: "0.0.3"
+  show_overlay:
+    dependency: transitive
     description:
       name: show_overlay
       url: "https://pub.dartlang.org"
