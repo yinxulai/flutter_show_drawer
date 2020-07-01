@@ -18,13 +18,22 @@ Function showDrawer({
 
   /// [alignment] 指定动画的方向
   Alignment alignment,
+
+  // 可以为你的 Overlay 添加一个位于背景的遮罩层
+  /// [barrier] 设置为 false 则不实用 barrier
+  /// [barrierBlur] 指定 barrier 的背景模糊效果
+  /// [barrierColor] 为你的 barrier 指定背景颜色
+  /// [barrierDismissible] 指定是否可以通过点击 barrier 移除本 [OverlayEntry]
+  double barrierBlur,
+  Color barrierColor,
+  bool barrier = true,
+  bool barrierDismissible = true,
 }) {
   assert(builder != null);
 
   return showOverlay(
     barrier: true,
     context: context,
-    barrierBlur: true,
     barrierDismissible: true,
     animationDuration: animationDuration ?? Duration(milliseconds: 200),
     builder: (context, animation, closer) {

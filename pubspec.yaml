@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  show_overlay: ^0.0.5
+  show_overlay: ^1.0.0
 
 dev_dependencies:
   flutter_test:
