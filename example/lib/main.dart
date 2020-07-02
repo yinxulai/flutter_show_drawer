@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'showOverlay example',
       home: Scaffold(body: Body()),
+      showPerformanceOverlay: true,
     );
   }
 }

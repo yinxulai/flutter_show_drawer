@@ -61,46 +61,44 @@ class _Drawer extends AnimatedWidget {
     this.alignment = Alignment.bottomCenter,
   }) : super(key: key, listenable: animation);
 
-  get offsetTween {
-    final target = this.alignment.toString();
-    if (target == Alignment.bottomCenter.toString()) {
-      return Tween<Offset>(begin: Offset(0, 1), end: Offset(0, 0));
+  Offset get beginOffset {
+    var beginX = 0.0;
+    var beginY = 0.0;
+
+    if (alignment.x > -1 && alignment.x < 0) {
+      beginX = -1.0;
     }
-    if (target == Alignment.bottomLeft.toString()) {
-      return Tween<Offset>(begin: Offset(-1, 1), end: Offset(0, 0));
+
+    if (alignment.x > 0 && alignment.x < 1) {
+      beginX = 1.0;
     }
-    if (target == Alignment.bottomRight.toString()) {
-      return Tween<Offset>(begin: Offset(1, 1), end: Offset(0, 0));
+
+    if (alignment.y > -1 && alignment.y < 0) {
+      beginY = -1.0;
     }
-    if (target == Alignment.center.toString()) {
-      // 为啥 -3? 我也不知道为啥
-      return Tween<Offset>(begin: Offset(0, -3), end: Offset(0, 0));
+
+    if (alignment.y > 0 && alignment.y < 1) {
+      beginY = 1.0;
     }
-    if (target == Alignment.centerLeft.toString()) {
-      return Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0));
-    }
-    if (target == Alignment.centerRight.toString()) {
-      return Tween<Offset>(begin: Offset(1, 0), end: Offset(0, 0));
-    }
-    if (target == Alignment.topCenter.toString()) {
-      return Tween<Offset>(begin: Offset(0, -1), end: Offset(0, 0));
-    }
-    if (target == Alignment.topLeft.toString()) {
-      return Tween<Offset>(begin: Offset(-1, -1), end: Offset(0, 0));
-    }
-    if (target == Alignment.topRight.toString()) {
-      return Tween<Offset>(begin: Offset(1, -1), end: Offset(0, 0));
-    }
-    // 默认从上部
-    return Tween<Offset>(begin: Offset(0, -1), end: Offset(0, 0));
+
+    return Offset(beginX, beginY);
+  }
+
+  Tween<Offset> get animationAlignment {
+    return Tween<Offset>(
+      end: beginOffset,
+      begin: Offset(alignment.x, alignment.y),
+    );
   }
 
   Widget build(BuildContext context) {
+    debugPrint(beginOffset.toString() + alignment.toString());
+
     return Align(
       alignment: this.alignment,
       child: SlideTransition(
         child: builder(context, animation, this.closer),
-        position: offsetTween.animate(animation.drive(curve)),
+        position: animationAlignment.animate(animation.drive(curve)),
       ),
     );
   }
