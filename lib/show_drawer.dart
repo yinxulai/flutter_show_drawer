@@ -13,14 +13,19 @@ Function showDrawer({
   /// [builder] 提供 builder 来构建你的 widget
   _Builder builder,
 
+  /// 使用最根处的 [Overlay] 来展示
+  bool useRootOverlay = true,
+
   /// [animationDuration] 如果你使用动画，可以通过这个指定动画的执行时间
+  /// [animationCurve] 可以设置动画的 Curve 效果
   Duration animationDuration,
+  Curve animationCurve = Curves.easeInOutCirc,
 
   /// [alignment] 指定动画的方向
   Alignment alignment,
 
   // 可以为你的 Overlay 添加一个位于背景的遮罩层
-  /// [barrier] 设置为 false 则不实用 barrier
+  /// [barrier] 设置为 false 则不使用 barrier
   /// [barrierBlur] 指定 barrier 的背景模糊效果
   /// [barrierColor] 为你的 barrier 指定背景颜色
   /// [barrierDismissible] 指定是否可以通过点击 barrier 移除本 [OverlayEntry]
@@ -35,9 +40,11 @@ Function showDrawer({
     barrier: true,
     context: context,
     barrierDismissible: true,
+    useRootOverlay: useRootOverlay,
     animationDuration: animationDuration ?? Duration(milliseconds: 200),
     builder: (context, animation, closer) {
-      return _Drawer(
+      return _AnimatedDrawer(
+        curve: animationCurve,
         animation: animation,
         alignment: alignment,
         builder: builder,
@@ -47,58 +54,41 @@ Function showDrawer({
   );
 }
 
-class _Drawer extends AnimatedWidget {
+class _AnimatedDrawer extends AnimatedWidget {
+  final Curve curve;
   final Function closer;
   final _Builder builder;
   final Alignment alignment;
   final Animation<double> animation;
-  final curve = CurveTween(curve: Curves.easeInOutCirc);
-  _Drawer({
+
+  _AnimatedDrawer({
     Key key,
-    this.builder,
+    this.curve,
     this.closer,
+    this.builder,
     this.animation,
     this.alignment = Alignment.bottomCenter,
   }) : super(key: key, listenable: animation);
 
-  Offset get beginOffset {
-    var beginX = 0.0;
-    var beginY = 0.0;
-
-    if (alignment.x > -1 && alignment.x < 0) {
-      beginX = -1.0;
-    }
-
-    if (alignment.x > 0 && alignment.x < 1) {
-      beginX = 1.0;
-    }
-
-    if (alignment.y > -1 && alignment.y < 0) {
-      beginY = -1.0;
-    }
-
-    if (alignment.y > 0 && alignment.y < 1) {
-      beginY = 1.0;
-    }
-
-    return Offset(beginX, beginY);
-  }
-
-  Tween<Offset> get animationAlignment {
+  Animation<Offset> get animationPosition {
     return Tween<Offset>(
-      end: beginOffset,
+      end: Offset(0.0, 0.0),
       begin: Offset(alignment.x, alignment.y),
+    ).animate(
+      animation.drive(
+        CurveTween(
+          curve: curve,
+        ),
+      ),
     );
   }
 
   Widget build(BuildContext context) {
-    debugPrint(beginOffset.toString() + alignment.toString());
-
     return Align(
       alignment: this.alignment,
       child: SlideTransition(
+        position: animationPosition,
         child: builder(context, animation, this.closer),
-        position: animationAlignment.animate(animation.drive(curve)),
       ),
     );
   }

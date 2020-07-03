@@ -19,8 +19,9 @@ class MyApp extends StatelessWidget {
 class Body extends StatelessWidget {
   get testCard {
     return Container(
-      height: 120,
+      height: 520,
       width: 300,
+      child: Center(child: Text('Some widget')),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(20)),
