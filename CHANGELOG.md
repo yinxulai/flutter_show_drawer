@@ -1,7 +1,11 @@
+## 0.0.5
+
+* Enhanced implementation
+
 ## 0.0.4
 
-* add expmple
-* remove child api
+* Add expmple
+* Remove child api
 * Add some basic LICENSE, README... files
 
 ## 0.0.3 -
