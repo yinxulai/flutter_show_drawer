@@ -9,103 +9,118 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'showOverlay example',
+      title: 'showDrawer example',
       home: Scaffold(body: Body()),
-      showPerformanceOverlay: true,
+      // showPerformanceOverlay: true,
     );
   }
 }
 
-class Body extends StatelessWidget {
-  get testCard {
+class OverlayBox extends StatelessWidget {
+  final Widget child;
+  OverlayBox({this.child});
+
+  @override
+  Widget build(Object context) {
     return Container(
-      height: 520,
-      width: 300,
-      child: Center(child: Text('Some widget')),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(20)),
+      color: Colors.grey[200],
+      child: Overlay(
+        initialEntries: [
+          OverlayEntry(
+            builder: (_) => child,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Test extends StatelessWidget {
+  final String title;
+  Test({this.title});
+
+  generateRaisedButton(
+    String title,
+    Alignment alignment,
+    BuildContext context,
+  ) {
+    return Expanded(
+      child: RaisedButton(
+        child: Text(title),
+        onPressed: () => showDrawer(
+          barrier: true,
+          context: context,
+          alignment: alignment,
+          barrierDismissible: true,
+          builder: (_, __, close) => Container(
+            width: 300,
+            height: 200,
+            child: Center(
+              child: RaisedButton(
+                onPressed: close,
+                child: Text('close'),
+              ),
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+            ),
+          ),
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Container(
+      padding: EdgeInsets.all(30),
+      child: Center(
+        child: Column(
+          children: [
+            Text(title),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              generateRaisedButton("topLeft", Alignment.topLeft, context),
+              generateRaisedButton("topCenter", Alignment.topCenter, context),
+              generateRaisedButton("topRight", Alignment.topRight, context),
+            ]),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              generateRaisedButton("centerLeft", Alignment.centerLeft, context),
+              generateRaisedButton("center", Alignment.center, context),
+              generateRaisedButton(
+                  "centerRight", Alignment.centerRight, context),
+            ]),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              generateRaisedButton("bottomLeft", Alignment.bottomLeft, context),
+              generateRaisedButton(
+                  "bottomCenter", Alignment.bottomCenter, context),
+              generateRaisedButton(
+                  "bottomRight", Alignment.bottomRight, context),
+            ])
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Body extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          RaisedButton(
-            onPressed: () => showDrawer(
-              context: context,
-              builder: (_, __, ___) => testCard,
-              alignment: Alignment.bottomCenter,
+        children: [
+          Expanded(
+            child: Test(
+              title: "Global",
             ),
-            child: Text('bottomCenter'),
           ),
-          RaisedButton(
-            onPressed: () => showDrawer(
-              context: context,
-              builder: (_, __, ___) => testCard,
-              alignment: Alignment.bottomLeft,
+          Expanded(
+            child: OverlayBox(
+              child: Test(
+                title: "Local",
+              ),
             ),
-            child: Text('bottomLeft'),
-          ),
-          RaisedButton(
-            onPressed: () => showDrawer(
-              context: context,
-              builder: (_, __, ___) => testCard,
-              alignment: Alignment.bottomRight,
-            ),
-            child: Text('bottomRight'),
-          ),
-          RaisedButton(
-            onPressed: () => showDrawer(
-              context: context,
-              builder: (_, __, ___) => testCard,
-              alignment: Alignment.center,
-            ),
-            child: Text('center'),
-          ),
-          RaisedButton(
-            onPressed: () => showDrawer(
-              context: context,
-              builder: (_, __, ___) => testCard,
-              alignment: Alignment.centerLeft,
-            ),
-            child: Text('centerLeft'),
-          ),
-          RaisedButton(
-            onPressed: () => showDrawer(
-              context: context,
-              builder: (_, __, ___) => testCard,
-              alignment: Alignment.centerRight,
-            ),
-            child: Text('centerRight'),
-          ),
-          RaisedButton(
-            onPressed: () => showDrawer(
-              context: context,
-              builder: (_, __, ___) => testCard,
-              alignment: Alignment.topCenter,
-            ),
-            child: Text('topCenter'),
-          ),
-          RaisedButton(
-            onPressed: () => showDrawer(
-              context: context,
-              builder: (_, __, ___) => testCard,
-              alignment: Alignment.topLeft,
-            ),
-            child: Text('topLeft'),
-          ),
-          RaisedButton(
-            onPressed: () => showDrawer(
-              context: context,
-              builder: (_, __, ___) => testCard,
-              alignment: Alignment.topRight,
-            ),
-            child: Text('topRight'),
           ),
         ],
       ),

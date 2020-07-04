@@ -3,18 +3,17 @@ library show_drawer;
 import 'package:flutter/widgets.dart';
 import 'package:show_overlay/show_overlay.dart';
 
-/// [_Builder] 包含三个参数，第一个为 [BuildContext], 第二个为 [Animation<double>]
+/// [DrawerBuilder] 包含三个参数，第一个为 [BuildContext], 第二个为 [Animation<double>]
 /// 第三个为 [Function], 执行 [Function] 可以移除当前的 [Drawer]
-typedef _Builder = Widget Function(BuildContext, Animation<double>, Function);
+typedef DrawerBuilder = Widget Function(BuildContext, Animation<double>, Function);
 
 Function showDrawer({
-  @required BuildContext context,
-
   /// [builder] 提供 builder 来构建你的 widget
-  _Builder builder,
+  @required BuildContext context,
+  @required DrawerBuilder builder,
 
   /// 使用最根处的 [Overlay] 来展示
-  bool useRootOverlay = true,
+  bool useRootOverlay = false,
 
   /// [animationDuration] 如果你使用动画，可以通过这个指定动画的执行时间
   /// [animationCurve] 可以设置动画的 Curve 效果
@@ -34,21 +33,19 @@ Function showDrawer({
   bool barrier = true,
   bool barrierDismissible = true,
 }) {
-  assert(builder != null);
-
   return showOverlay(
-    barrier: true,
+    barrier: barrier,
     context: context,
-    barrierDismissible: true,
     useRootOverlay: useRootOverlay,
-    animationDuration: animationDuration ?? Duration(milliseconds: 200),
-    builder: (context, animation, closer) {
+    barrierDismissible: barrierDismissible,
+    animationDuration: animationDuration ?? Duration(milliseconds: 300),
+    builder: (context, animation, close) {
       return _AnimatedDrawer(
         curve: animationCurve,
         animation: animation,
         alignment: alignment,
         builder: builder,
-        closer: closer,
+        close: close,
       );
     },
   );
@@ -56,15 +53,15 @@ Function showDrawer({
 
 class _AnimatedDrawer extends AnimatedWidget {
   final Curve curve;
-  final Function closer;
-  final _Builder builder;
+  final Function close;
+  final DrawerBuilder builder;
   final Alignment alignment;
   final Animation<double> animation;
 
   _AnimatedDrawer({
     Key key,
     this.curve,
-    this.closer,
+    this.close,
     this.builder,
     this.animation,
     this.alignment = Alignment.bottomCenter,
@@ -88,7 +85,7 @@ class _AnimatedDrawer extends AnimatedWidget {
       alignment: this.alignment,
       child: SlideTransition(
         position: animationPosition,
-        child: builder(context, animation, this.closer),
+        child: builder(context, animation, this.close),
       ),
     );
   }
