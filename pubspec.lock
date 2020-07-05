@@ -84,10 +84,10 @@ packages:
   show_overlay:
     dependency: "direct main"
     description:
-      name: show_overlay
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.5"
+      path: "../flutter_show_overlay"
+      relative: true
+    source: path
+    version: "1.0.7"
   sky_engine:
     dependency: transitive
     description: flutter
