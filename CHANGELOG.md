@@ -1,3 +1,7 @@
+## 1.0.0
+
+* Enhanced implementation
+
 ## 0.0.5
 
 * Enhanced implementation

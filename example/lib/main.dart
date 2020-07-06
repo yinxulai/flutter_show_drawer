@@ -41,7 +41,7 @@ class Test extends StatelessWidget {
 
   generateRaisedButton(
     String title,
-    Alignment alignment,
+    DrawerDirection direction,
     BuildContext context,
   ) {
     return Expanded(
@@ -50,7 +50,7 @@ class Test extends StatelessWidget {
         onPressed: () => showDrawer(
           barrier: true,
           context: context,
-          alignment: alignment,
+          direction: direction,
           barrierDismissible: true,
           builder: (_, __, close) => Container(
             width: 300,
@@ -80,22 +80,50 @@ class Test extends StatelessWidget {
           children: [
             Text(title),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              generateRaisedButton("topLeft", Alignment.topLeft, context),
-              generateRaisedButton("topCenter", Alignment.topCenter, context),
-              generateRaisedButton("topRight", Alignment.topRight, context),
+              generateRaisedButton(
+                "topLeft",
+                DrawerDirection.topLeft,
+                context,
+              ),
+              generateRaisedButton(
+                "topCenter",
+                DrawerDirection.topCenter,
+                context,
+              ),
+              generateRaisedButton(
+                "topRight",
+                DrawerDirection.topRight,
+                context,
+              ),
             ]),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              generateRaisedButton("centerLeft", Alignment.centerLeft, context),
-              generateRaisedButton("center", Alignment.center, context),
               generateRaisedButton(
-                  "centerRight", Alignment.centerRight, context),
+                "centerLeft",
+                DrawerDirection.centerLeft,
+                context,
+              ),
+              generateRaisedButton(
+                "centerRight",
+                DrawerDirection.centerRight,
+                context,
+              ),
             ]),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              generateRaisedButton("bottomLeft", Alignment.bottomLeft, context),
               generateRaisedButton(
-                  "bottomCenter", Alignment.bottomCenter, context),
+                "bottomLeft",
+                DrawerDirection.bottomLeft,
+                context,
+              ),
               generateRaisedButton(
-                  "bottomRight", Alignment.bottomRight, context),
+                "bottomCenter",
+                DrawerDirection.bottomCenter,
+                context,
+              ),
+              generateRaisedButton(
+                "bottomRight",
+                DrawerDirection.bottomRight,
+                context,
+              ),
             ])
           ],
         ),

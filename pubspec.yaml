@@ -1,7 +1,7 @@
 name: show_drawer
 homepage: https://github.com/yinxulai/flutter_show_drawer
-description: Quickly and easily display a draw from any direction with animation.
-version: 0.0.5
+description: Quickly and easily display a drawer from any direction with animation.
+version: 1.0.0
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -9,8 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  show_overlay:
-    path: ../flutter_show_overlay
+  show_overlay: ^1.0.8
 
 dev_dependencies:
   flutter_test:

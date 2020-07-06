@@ -5,7 +5,23 @@ import 'package:show_overlay/show_overlay.dart';
 
 /// [DrawerBuilder] 包含三个参数，第一个为 [BuildContext], 第二个为 [Animation<double>]
 /// 第三个为 [Function], 执行 [Function] 可以移除当前的 [Drawer]
-typedef DrawerBuilder = Widget Function(BuildContext, Animation<double>, Function);
+typedef DrawerBuilder = Widget Function(
+  BuildContext,
+  Animation<double>,
+  Function,
+);
+
+enum DrawerDirection {
+  topLeft,
+  topCenter,
+  topRight,
+  centerLeft,
+  // center,
+  centerRight,
+  bottomLeft,
+  bottomCenter,
+  bottomRight,
+}
 
 Function showDrawer({
   /// [builder] 提供 builder 来构建你的 widget
@@ -20,8 +36,8 @@ Function showDrawer({
   Duration animationDuration,
   Curve animationCurve = Curves.easeInOutCirc,
 
-  /// [alignment] 指定动画的方向
-  Alignment alignment,
+  /// [direction] 指定动画的方向
+  DrawerDirection direction,
 
   // 可以为你的 Overlay 添加一个位于背景的遮罩层
   /// [barrier] 设置为 false 则不使用 barrier
@@ -38,14 +54,14 @@ Function showDrawer({
     context: context,
     useRootOverlay: useRootOverlay,
     barrierDismissible: barrierDismissible,
-    animationDuration: animationDuration ?? Duration(milliseconds: 300),
+    animationDuration: animationDuration ?? Duration(milliseconds: 200),
     builder: (context, animation, close) {
       return _AnimatedDrawer(
-        curve: animationCurve,
-        animation: animation,
-        alignment: alignment,
-        builder: builder,
         close: close,
+        animation: animation,
+        direction: direction,
+        curve: animationCurve,
+        child: builder(context, animation, close),
       );
     },
   );
@@ -53,19 +69,44 @@ Function showDrawer({
 
 class _AnimatedDrawer extends AnimatedWidget {
   final Curve curve;
+  final Widget child;
   final Function close;
-  final DrawerBuilder builder;
-  final Alignment alignment;
+  final DrawerDirection direction;
   final Animation<double> animation;
 
   _AnimatedDrawer({
     Key key,
     this.curve,
     this.close,
-    this.builder,
+    this.child,
     this.animation,
-    this.alignment = Alignment.bottomCenter,
+    this.direction = DrawerDirection.topCenter,
   }) : super(key: key, listenable: animation);
+
+  Alignment get alignment {
+    switch (direction) {
+      case DrawerDirection.topLeft:
+        return Alignment.topLeft;
+      case DrawerDirection.topCenter:
+        return Alignment.topCenter;
+      case DrawerDirection.topRight:
+        return Alignment.topRight;
+      case DrawerDirection.centerLeft:
+        return Alignment.centerLeft;
+      // case DrawerDirection.center:
+      //   return Alignment.center;
+      case DrawerDirection.centerRight:
+        return Alignment.centerRight;
+      case DrawerDirection.bottomLeft:
+        return Alignment.bottomLeft;
+      case DrawerDirection.bottomCenter:
+        return Alignment.bottomCenter;
+      case DrawerDirection.bottomRight:
+        return Alignment.bottomRight;
+    }
+
+    return Alignment.topCenter;
+  }
 
   Animation<Offset> get animationPosition {
     return Tween<Offset>(
@@ -81,11 +122,13 @@ class _AnimatedDrawer extends AnimatedWidget {
   }
 
   Widget build(BuildContext context) {
-    return Align(
-      alignment: this.alignment,
-      child: SlideTransition(
-        position: animationPosition,
-        child: builder(context, animation, this.close),
+    return ClipRect(
+      child: Align(
+        alignment: alignment,
+        child: SlideTransition(
+          child: child,
+          position: animationPosition,
+        ),
       ),
     );
   }
